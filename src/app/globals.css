@@ -2,22 +2,40 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    /* EduVault Base Colors (Dark Theme Default) */
+    --background: #0C0E1A;
+    --foreground: #FFFFFF;
+    
+    /* Surfaces */
+    --surface: #13162B;
+    --raised: #1C2040;
+    
+    /* Accents */
+    --accent: #6C63FF;
+    --accent-hover: #8B84FF;
+    
+    /* Supporting */
+    --amber: #F5A623;
+    --mint: #3DD6A0;
+    
+    /* Text / Neutral */
+    --text-muted: #8E93B3;
+    --border: #2A2E50;
   }
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+@layer base {
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    @apply antialiased min-h-screen;
+  }
+}
+
+::selection {
+  background-color: rgba(108, 99, 255, 0.3);
 }
 
 @layer utilities {

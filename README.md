@@ -1,36 +1,64 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 📚 EduVault
+
+**Your Premium Knowledge Vault** — A modern study platform to organize, review, and master your learning materials.
+
+## What is EduVault?
+
+EduVault is a web-based study tool inspired by platforms like Quizlet. It lets you create **vaults** (knowledge bases), organize them into **collections**, and build **study sets** with flashcards. Then use interactive study modes like flashcard review, match games, and learn mode to retain what you've learned.
+
+## Features
+
+- 🗂️ **Vaults & Collections** — Organize study materials into structured knowledge bases
+- 🃏 **Flashcards** — Create and review flashcards with spaced repetition (SM-2 algorithm)
+- 🎮 **Match Game** — Timed term-definition matching for active recall
+- 📝 **Learn Mode** — Multiple-choice quizzes to test your knowledge
+- 📊 **Dashboard** — Track your progress with stats, streaks, and recent activity
+- 🔐 **Auth** — Secure login and signup powered by Supabase
+
+## Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| Framework | Next.js 14 (App Router) |
+| Language | TypeScript |
+| Styling | Tailwind CSS |
+| Database & Auth | Supabase |
+| State Management | Zustand |
+| Animations | Framer Motion |
+| Icons | Lucide React |
 
 ## Getting Started
 
-First, run the development server:
+1. **Install dependencies**
+   ```bash
+   npm install
+   ```
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+2. **Set up environment variables** — Create a `.env.local` file:
+   ```
+   NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
+   ```
+
+3. **Run the dev server**
+   ```bash
+   npm run dev
+   ```
+
+4. Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+## Project Structure
+
+```
+src/
+├── app/              # Pages and layouts (Next.js App Router)
+│   ├── (auth)/       # Login and signup pages
+│   └── (dashboard)/  # Protected dashboard pages
+├── components/       # Reusable UI components
+├── lib/              # Supabase clients and utilities
+└── stores/           # Zustand state management
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## License
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+This project is for educational purposes.
