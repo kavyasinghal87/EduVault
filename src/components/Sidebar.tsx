@@ -33,7 +33,7 @@ export default function Sidebar({ userName, userEmail }: SidebarProps) {
   const router = useRouter();
   const [collapsed, setCollapsed] = useState(false);
   const [loggingOut, setLoggingOut] = useState(false);
-  const [isPending, startTransition] = useTransition();
+  const [_isPending, startTransition] = useTransition();
 
   const handleLogout = async () => {
     setLoggingOut(true);

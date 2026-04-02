@@ -3,7 +3,7 @@
 import { useEffect, useState, useRef } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useAuth } from "@/lib/AuthContext";
-import { User, Mail, Shield, LogOut, CheckCircle2 } from "lucide-react";
+import { User, Shield, LogOut, CheckCircle2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 

@@ -1,7 +1,3 @@
-"use client";
-
-import { motion } from "framer-motion";
-
 export default function DashboardLoading() {
   return (
     <div className="space-y-8 animate-in fade-in duration-200">
