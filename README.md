@@ -2,9 +2,11 @@
 
 **Your Premium Knowledge Vault** — A modern study platform to organize, review, and master your learning materials.
 
+🔗 **Live Demo:** [https://eduvault-eta.vercel.app](https://eduvault-eta.vercel.app)
+
 ## What is EduVault?
 
-EduVault is a web-based study tool inspired by platforms like Quizlet. It lets you create **vaults** (knowledge bases), organize them into **collections**, and build **study sets** with flashcards. Then use interactive study modes like flashcard review, match games, and learn mode to retain what you've learned.
+EduVault is a web-based study tool that lets you create **vaults** (knowledge bases), organize them into **collections**, and build **study sets** with flashcards. Then use interactive study modes like flashcard review, match games, and learn mode to retain what you've learned.
 
 ## Features
 
