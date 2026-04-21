@@ -9,9 +9,15 @@ import {
   Plus,
   ArrowRight,
   BookOpen,
+  FileUp,
+  FileText,
+  Image as ImageIcon,
+  File,
+  Clock,
 } from "lucide-react";
 import ContinueStudyingCarousel from "@/components/ContinueStudyingCarousel";
 import StatsCard from "@/components/StatsCard";
+import UploadMaterialModal from "@/components/UploadMaterialModal";
 import { createClient } from "@/lib/supabase/client";
 import { useAuth } from "@/lib/AuthContext";
 import { useEffect, useState, useRef } from "react";
@@ -22,6 +28,54 @@ interface Vault {
   description: string | null;
   exam_type: string | null;
   created_at: string;
+}
+
+interface RecentMaterial {
+  id: string;
+  file_name: string;
+  file_type: string;
+  file_size: number;
+  created_at: string;
+}
+
+function getFileIcon(type: string) {
+  switch (type) {
+    case "pdf": return <FileText className="w-5 h-5 text-red-400" />;
+    case "docx": return <FileText className="w-5 h-5 text-blue-400" />;
+    case "txt": return <FileText className="w-5 h-5 text-emerald-400" />;
+    case "image": return <ImageIcon className="w-5 h-5 text-purple-400" />;
+    default: return <File className="w-5 h-5 text-muted" />;
+  }
+}
+
+function getFileColor(type: string) {
+  switch (type) {
+    case "pdf": return "bg-red-500/10 border-red-500/20";
+    case "docx": return "bg-blue-500/10 border-blue-500/20";
+    case "txt": return "bg-emerald-500/10 border-emerald-500/20";
+    case "image": return "bg-purple-500/10 border-purple-500/20";
+    default: return "bg-white/5 border-white/10";
+  }
+}
+
+function formatSize(bytes: number): string {
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
+
+function formatDate(iso: string): string {
+  const d = new Date(iso);
+  const now = new Date();
+  const diffMs = now.getTime() - d.getTime();
+  const diffMins = Math.floor(diffMs / 60000);
+  const diffHours = Math.floor(diffMs / 3600000);
+  const diffDays = Math.floor(diffMs / 86400000);
+  if (diffMins < 1) return "Just now";
+  if (diffMins < 60) return `${diffMins}m ago`;
+  if (diffHours < 24) return `${diffHours}h ago`;
+  if (diffDays < 7) return `${diffDays}d ago`;
+  return d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
 }
 
 const staggerContainer = {
@@ -47,6 +101,8 @@ export default function DashboardPage() {
   const [totalCards, setTotalCards] = useState(0);
   const [streak, setStreak] = useState(0);
   const [userName, setUserName] = useState("");
+  const [recentMaterials, setRecentMaterials] = useState<RecentMaterial[]>([]);
+  const [isUploadOpen, setIsUploadOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const fetched = useRef(false);
 
@@ -60,7 +116,7 @@ export default function DashboardPage() {
       setUserName(user.user_metadata?.name || "User");
 
       // Fire all queries in parallel instead of sequentially
-      const [vaultResult, cardCountResult, profileResult] = await Promise.all([
+      const [vaultResult, cardCountResult, profileResult, materialsResult] = await Promise.all([
         supabase
           .from("vaults")
           .select("*")
@@ -76,11 +132,18 @@ export default function DashboardPage() {
           .select("streak_count")
           .eq("id", user.id)
           .single(),
+        supabase
+          .from("study_materials")
+          .select("id, file_name, file_type, file_size, created_at")
+          .eq("user_id", user.id)
+          .order("created_at", { ascending: false })
+          .limit(3),
       ]);
 
       setVaults(vaultResult.data || []);
       setTotalCards(cardCountResult.count || 0);
       setStreak(profileResult.data?.streak_count || 0);
+      setRecentMaterials(materialsResult.data || []);
       setLoading(false);
     };
 
@@ -165,6 +228,13 @@ export default function DashboardPage() {
           <BookOpen className="w-4 h-4" />
           Start Studying
         </Link>
+        <button
+          onClick={() => setIsUploadOpen(true)}
+          className="inline-flex items-center gap-2 px-5 py-2.5 bg-surface border border-white/10 hover:bg-raised text-foreground rounded-xl text-sm font-semibold transition-all"
+        >
+          <FileUp className="w-4 h-4" />
+          Upload Materials
+        </button>
       </motion.div>
 
       {/* Continue Studying Carousel */}
@@ -238,6 +308,73 @@ export default function DashboardPage() {
           </div>
         )}
       </motion.div>
+
+      {/* Recent Materials */}
+      {recentMaterials.length > 0 && (
+        <motion.div variants={fadeUp}>
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-bold">Recent Materials</h2>
+            <Link
+              href="/dashboard/materials"
+              className="text-sm text-accent hover:text-accent-hover font-medium flex items-center gap-1 transition-colors"
+            >
+              View All
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {recentMaterials.map((material) => (
+              <motion.div key={material.id} whileHover={{ y: -3 }} transition={{ duration: 0.2 }}>
+                <Link
+                  href="/dashboard/materials"
+                  className="block p-4 bg-surface border border-white/5 hover:border-accent/30 rounded-2xl transition-all group"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className={`w-11 h-11 rounded-xl border flex items-center justify-center shrink-0 ${getFileColor(material.file_type)}`}>
+                      {getFileIcon(material.file_type)}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-semibold text-sm truncate group-hover:text-accent transition-colors">
+                        {material.file_name}
+                      </h3>
+                      <div className="flex items-center gap-2 text-xs text-muted mt-0.5">
+                        <span className="uppercase font-semibold">{material.file_type}</span>
+                        <span>•</span>
+                        <span>{formatSize(material.file_size)}</span>
+                        <span>•</span>
+                        <span className="flex items-center gap-0.5">
+                          <Clock className="w-3 h-3" />
+                          {formatDate(material.created_at)}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </Link>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
+      )}
+
+      {/* Upload Modal */}
+      <UploadMaterialModal
+        isOpen={isUploadOpen}
+        onClose={() => setIsUploadOpen(false)}
+        onUploadComplete={() => {
+          // Refresh recent materials
+          const fetchRecent = async () => {
+            const supabase = createClient();
+            const { data } = await supabase
+              .from("study_materials")
+              .select("id, file_name, file_type, file_size, created_at")
+              .eq("user_id", user!.id)
+              .order("created_at", { ascending: false })
+              .limit(3);
+            setRecentMaterials(data || []);
+          };
+          fetchRecent();
+        }}
+      />
     </motion.div>
   );
 }

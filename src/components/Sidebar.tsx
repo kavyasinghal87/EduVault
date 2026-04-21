@@ -7,6 +7,7 @@ import {
   LayoutDashboard,
   FolderOpen,
   GraduationCap,
+  FileUp,
   Settings,
   LogOut,
   ChevronLeft,
@@ -20,6 +21,7 @@ const navItems = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/dashboard/vaults", label: "My Vaults", icon: FolderOpen },
   { href: "/dashboard/study", label: "Study", icon: GraduationCap },
+  { href: "/dashboard/materials", label: "Materials", icon: FileUp },
   { href: "/dashboard/settings", label: "Settings", icon: Settings },
 ];
 
